@@ -16,5 +16,15 @@ class CookBookForm(forms.ModelForm):
         model = CookBook
         exclude = ['ingridients']
 
+
+
 class IngridientsForm(forms.Form):
+    pass
+
+class BacktestForm(forms.ModelForm):
+    class Meta:
+        model = BacktestType
+        exclude = ['backtest_details']
+
+class BacktestDetailsForm(forms.Form):
     pass

@@ -18,8 +18,6 @@
     <ul class="nav navbar-nav">
       <li class="{% block home_active %}{% endblock %}">
 	<a href="{% url 'demo:index' %}">Home</a></li>
-      <li class="{% block test_active %}{% endblock %}">
-	<a href="{% url 'demo:test_page' %}">Test</a></li>
       <li class="{% block dynamic_active %}{% endblock %}">
 	<a href="{% url 'demo:dynamic' %}">Dynamic Demo</a></li>
     </ul>
@@ -32,4 +30,4 @@
 </div>
 
 </body>
-</html> 
+</html>
