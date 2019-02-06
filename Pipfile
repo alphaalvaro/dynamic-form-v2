@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+amqp = "==2.2.2"
+anyjson = "==0.3.3"
+billiard = "==3.5.0.3"
+celery = "==4.1.0"
+django-widget-tweaks = "==1.4.1"
+kombu = "==4.1.0"
+pytz = "==2017.3"
+vine = "==1.1.4"
+Django = "==1.11.7"
+django_celery_results = "==1.0.1"
+PyMySQL = "==0.8.0"
+SQLAlchemy = "==1.1.15"
+
+[requires]
+python_version = "3.6"

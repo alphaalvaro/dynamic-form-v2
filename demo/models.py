@@ -8,4 +8,3 @@ class CookBook(models.Model):
     recipe_name = models.IntegerField(default=0,
             choices=RECIPES)
     ingridients = models.CharField(max_length=1024)
-

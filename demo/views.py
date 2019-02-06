@@ -106,7 +106,7 @@ def nondynamic(request):
         elif recipe == 1:
             ing_form = PancakeForm(request.POST, instance=ing)
         ing_form.save()
-    
+
     context['ingridients_form'] = ing_form
     context['cookbook_form'] = CookBookForm(request.POST or None)
     return render(request, 'demo/nondynamic.html', context)
@@ -114,39 +114,37 @@ def nondynamic(request):
 def dynamic(request):
     context = {}
     content = {}
-
-    ckb = CookBook.objects.last()
-    if ckb == None:
-        ckb = CookBook.objects.create()
+    if request.session.get('initialised', False):
+        request.session['initialised']=true
+        request.session['recipe_name']=99
 
     if request.method == 'POST':
         if 'recipe_name' in request.POST:
-            ckb.recipe_name = int(request.POST['recipe_name'])
-            ckb.save()
-            try:
-                content = json.loads(ckb.ingridients)
-            except json.JSONDecodeError:
-                content = {}
+            request.session['recipe_name'] = int(request.POST['recipe_name'])
         else:
             for key in request.POST.keys():
                 if key != 'csrfmiddlewaretoken':
                     content[key] = request.POST[key]
-            ckb.ingridients = json.dumps(content)
-            ckb.save()
-    
-    if ckb.recipe_name == 0:
+            ckb = CookBook.objects.create(recipe_name = request.session['recipe_name'], ingridients = json.dumps(content))
+
+
+    if request.session['recipe_name'] == 0:
         new_fields = {
             'cheese': forms.IntegerField(),
             'ham'   : forms.IntegerField(),
             'onion' : forms.IntegerField(),
             'bread' : forms.IntegerField(),
             'ketchup': forms.IntegerField()}
-    else:
+    elif request.session['recipe_name'] == 1:
         new_fields = {
             'milk'  : forms.IntegerField(),
             'butter': forms.IntegerField(),
             'honey' : forms.IntegerField(),
             'eggs'  : forms.IntegerField()}
+    else:
+        request.session['recipe_name']=99
+        new_fields = {
+            }
 
     DynamicIngridientsForm = type('DynamicIngridientsForm',
             (IngridientsForm,),
@@ -156,4 +154,3 @@ def dynamic(request):
     context['ingridients_form'] = IngForm
     context['cookbook_form']    = CookBookForm(request.POST or None)
     return render(request, "demo/dynamic.html", context)
-
