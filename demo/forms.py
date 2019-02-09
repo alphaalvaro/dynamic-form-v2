@@ -1,5 +1,5 @@
 from django import forms
-from .models import CookBook, BacktestType
+from .models import CookBook, BacktestModel
 
 #class HamburgerForm(forms.ModelForm):
 #    class Meta:
@@ -23,7 +23,7 @@ class IngridientsForm(forms.Form):
 
 class BacktestForm(forms.ModelForm):
     class Meta:
-        model = BacktestType
+        model = BacktestModel
         exclude = ['backtest_details']
 
 class BacktestDetailsForm(forms.Form):

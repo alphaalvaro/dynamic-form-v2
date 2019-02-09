@@ -25,13 +25,13 @@
         type: 'get',
         data: form.serialize(),
         success: function (data) {
-          // console.log('data sent ' +
+          // console.log('data  sent ' +
           // data);
           // alert('data sent ' +
           // data);
           // $("#extra-parameters").load(location.href+"#extra-parameters>*","");
           // $("#extra-parameters").load(window.location.href + " #extra-parameters");
-          document.getElementById('extra-parameters').style.display = "block";
+          // document.getElementById('extra-parameters').style.display = "block";
           },
         failure: function(data) {
           alert('Got an error dude');
@@ -53,7 +53,21 @@
         <div class="form-group row">
           <div class="col-sm-6">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.id_for_label == 'id_backtest_type' %}
+              <div class="form-group row">
+                <div class="col-sm-8"> {{ field|add_class:'form-control' }}</div>
+                <div id="btnClick" class="col-sm-4">
+                  <div class="btn-group btn-group-justified" role="group">
+                    <div class="btn-group" role="group">
+                      <button  class="btn btn-primary" type="submit">Change val</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
               {{ field|add_class:'form-control' }}
+            {% endif %}
           </div>
         </div>
         {% endfor %}
@@ -68,16 +82,10 @@
           </div>
         </div>
       </form>
-
-
-      <div id="btnClick" class="col-sm-3">
-        <div class="btn-group btn-group-justified" role="group">
-          <div class="btn-group" role="group">
-            <button  class="btn btn-primary" type="submit">Modify default</button>
-          </div>
-        </div>
       </div>
-    </div>
+
+
+
 
     <div style="display:none;" id="extra-parameters" class="advanced-options">
       <h3>Specify Ingridients</h3>

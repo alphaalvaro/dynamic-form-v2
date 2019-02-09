@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='BacktestType',
+            name='BacktestModel',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('backtest_type', models.CharField(choices=[('moving_averages', 'Moving Averages'), ('bollinger_bands', 'Bollinger Bands')], default='moving_averages', max_length=1024)),

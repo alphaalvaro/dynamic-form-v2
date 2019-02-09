@@ -30,11 +30,13 @@ def dynamic(request):
             request.session['periodChosen'] = str(request.GET['periodChosen'])
             vars=botVariables()
             new_fields=vars.type_backtest_variables[request.session['backtest_type']]
-            print (new_fields)
+
+            print ('in get')
+
         else:
             new_fields = {
-                    'caca'  : forms.IntegerField(),
-                    'culo': forms.IntegerField(),
+                    'caca'  : forms.IntegerField(initial=123),
+                    'culo': forms.IntegerField(initial=123),
                     }
     else:
         new_fields = {
@@ -48,7 +50,7 @@ def dynamic(request):
     #         default=request.session['backtest_type']+'_default'
     #         vars=botVariables()
     #         deff=vars.type_backtest_variables[default]
-    #         ckb = BacktestType.objects.create(backtest_type = request.session['backtest_type'], backtest_details =deff )
+    #         ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'], backtest_details =deff )
     #         print ('recipe name')
     #     else:
     #         for key in request.POST.keys():
@@ -79,6 +81,7 @@ def dynamic(request):
     #     new_fields = {
     #         }
 
+    print ('in general')
     DynamicDetailsForm = type('DynamicDetailsForm',
             (BacktestDetailsForm,),
             new_fields)
@@ -86,5 +89,6 @@ def dynamic(request):
 
     DetailForm = DynamicDetailsForm(content)
     context['details_form'] = DetailForm
-    context['backtest_form']    = BacktestForm(request.POST or None)
+
+    context['backtest_form']    = BacktestForm(request.GET or None)
     return render(request, "demo/dynamic.html", context)

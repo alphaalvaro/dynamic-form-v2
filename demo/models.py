@@ -10,8 +10,8 @@ class CookBook(models.Model):
     ingridients = models.CharField(max_length=1024)
 
 
-class BacktestType(models.Model):
-    BacktestType = (
+class BacktestModel(models.Model):
+    BacktestModel = (
             ('moving_averages', 'Moving Averages'),
             ('bollinger_bands', 'Bollinger Bands'))
     Period_CHOICES= [
@@ -26,5 +26,5 @@ class BacktestType(models.Model):
     pairChosen= models.CharField(default='ETHUSDT', choices=Pair_CHOICES, max_length=1024)
     periodChosen= models.CharField(default='KLINE_INTERVAL_4HOUR', choices=Period_CHOICES, max_length=1024)
     backtest_type = models.CharField(default='moving_averages',
-            choices=BacktestType, max_length=1024)
+            choices=BacktestModel, max_length=1024)
     backtest_details = models.CharField(max_length=1024)
