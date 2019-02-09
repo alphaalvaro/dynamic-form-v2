@@ -51,22 +51,22 @@
         {% csrf_token %}
         {% for field in backtest_form %}
         <div class="form-group row">
-          <div class="col-sm-6">
+          <div class="col-sm-6 ">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {% if field.id_for_label == 'id_backtest_type' %}
               <div class="form-group row">
-                <div class="col-sm-8"> {{ field|add_class:'form-control' }}</div>
+                <div class="col-sm-8">{{ field|add_class:'form-control' }}</div>
                 <div id="btnClick" class="col-sm-4">
                   <div class="btn-group btn-group-justified" role="group">
                     <div class="btn-group" role="group">
-                      <button  class="btn btn-primary" type="submit">Change val</button>
+                      <button class="btn btn-primary" type="submit">Change value</button>
                     </div>
                   </div>
                 </div>
               </div>
             {% else %}
-              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-              {{ field|add_class:'form-control' }}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:'form-control' }}
             {% endif %}
           </div>
         </div>
@@ -76,13 +76,13 @@
           <div class="col-sm-3">
             <div class="btn-group btn-group-justified" role="group">
               <div class="btn-group" role="group">
-                <button  class="btn btn-primary" type="submit">Run Backtest</button>
+                <button class="btn btn-primary" type="submit">Run Backtest</button>
               </div>
             </div>
           </div>
         </div>
       </form>
-      </div>
+    </div>
 
 
 
@@ -95,7 +95,7 @@
         <div class="form-group row">
           <div class="col-sm-6">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-              {{ field|add_class:'form-control' }}
+            {{ field|add_class:'form-control' }}
           </div>
         </div>
         {% endfor %}
