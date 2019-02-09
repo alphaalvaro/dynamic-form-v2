@@ -76,26 +76,14 @@ class botVariables(object):
 
         self.type_backtest_variables= {
             'moving_averages': {
-                'mov_av_1': forms.IntegerField(),
-                'mov_av_2'   : forms.IntegerField(),
-                },
-            'moving_averages_default': {
-                'mov_av_1': 12,
-                'mov_av_2': 15,
+                'mov_av_1': forms.IntegerField(initial=10),
+                'mov_av_2'   : forms.IntegerField(initial=10),
                 },
             'bollinger_bands':{
                 'boll_band_1': forms.IntegerField(),
                 'boll_band_2': forms.IntegerField(),
                 },
-            'bollinger_bands_default':{
-                'boll_band_1': 15,
-                'boll_band_2': 10,
-                }
         }
-
-
-
-
 
 
     def unixtime(self, time):

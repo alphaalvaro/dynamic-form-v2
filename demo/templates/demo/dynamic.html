@@ -1,25 +1,13 @@
 {% extends 'demo/base.html' %}
 {% block title %}Dynamic Forms{% endblock %}
 {% block dynamic_active %}active{% endblock %}
-{% load widget_tweaks %}
+<!-- {% load widget_tweaks %} -->
 {% load static %}
 
 {% block body %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <link rel="stylesheet" href="{% static 'css/dynamic.css' %}">
 <script>
-  // $(document).on('click', '#btnClick', function(){
-  //   if (document.getElementById('extra-parameters').style.display === "none") {
-  //   document.getElementById('extra-parameters').style.display = "block";
-  //   document.getElementById('button_backtest').style.display = "none";
-  //   } else {
-  //     document.getElementById('extra-parameters').style.display = "none";
-  //     document.getElementById('button_backtest').style.display = "block";
-  //   }
-  // });
-
-
-
   $(document).on('change','#id_backtest_type', function () {
     console.log( $(this).val() );
     var form = $(this).closest("form");
@@ -28,12 +16,12 @@
         type: 'get',
         data: form.serialize(),
         success: function (data) {
-          // console.log('data  sent ' +
-          // data);
+          console.log(form.attr("data-url"));
+          // console.log('data  sent ' + data);
           // alert('data sent ' +
           // data);
           // $("#extra-parameters").load(location.href+"#extra-parameters>*","");
-          $("#extra-parameters").load(window.location.href + " #extra-parameters");
+          // $("#extra-parameters").load(window.location.href + " #extra-parameters");
           // document.getElementById('extra-parameters').style.display = "block";
           },
         failure: function(data) {
@@ -41,33 +29,55 @@
         }
       });
   });
-
-
-
+  $(document).on('click','#btnClick', function () {
+    // console.log( $(this).val() );
+    var form = $(this).closest("form");
+    $.ajax({
+        url: form.attr("data-url"),
+        type: 'get',
+        data: {'change_val': 1},
+        success: function (data) {
+          console.log(form.attr("data-url"));},
+        failure: function(data) {
+          alert('Got an error dude');
+        }
+      });
+    });
+    $(document).ajaxStop(function(){
+      $("#extra-parameters").load(window.location.href + " #extra-parameters");
+  });
 </script>
+
+
+
+
+
 <div class="row">
   <div class="col-sm-12">
     <div class="page-header">
+      {% if display_details %}
+      <h1>I'm diplaying</h1>
+      {% endif %}
       <h2>Choose Recipe</h2>
-      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="GET" data-url="{% url 'demo:dynamic' %}">
+      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST" data-url="{% url 'demo:dynamic' %}">
         {% csrf_token %}
         {% for field in backtest_form %}
         <div class="form-group row">
           <div class="col-sm-6 ">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {% if field.id_for_label == 'id_backtest_type' %}
-              <div class="form-group row">
-                <div class="col-sm-8">{{ field|add_class:'form-control' }}</div>
-                {% if not display_details %}
-                <div id="btnClick" class="col-sm-4">
-                  <div class="btn-group btn-group-justified" role="group">
-                    <div class="btn-group" role="group">
-                      <button class="btn btn-secondary" type="submit">Change default values</button>
-                    </div>
+            <div class="form-group row">
+              <div class="col-sm-8">{{ field|add_class:'form-control' }}</div>
+              {% if not display_details %}
+              <div id="btnClick" class="col-sm-4">
+                <div class="btn-group btn-group-justified" role="group">
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-secondary" type="button">Change default values</button>
                   </div>
                 </div>
-                {% endif %}
               </div>
+              {% endif %}
+            </div>
             {% else %}
             <!-- <label for="{{ field.id_for_label }}">{{ field.label }}</label> -->
             {{ field|add_class:'form-control' }}
@@ -78,15 +88,15 @@
         </div>
         {% endfor %}
         {%if display_details %}
-                    <div id="extra-parameters" class="advanced-options">
-                      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST">
-                        {% csrf_token %}
-                        {% for field in details_form %}
-                        <div class="form-group row">
-                          <div class="col-sm-6">
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field|add_class:'form-control' }}
-                            <div class="form-group row">
+        <div id="extra-parameters" class="advanced-options">
+          <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST">
+            {% csrf_token %}
+            {% for field in details_form %}
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                <!-- <div class="form-group row">
                               <div class="col-sm-11">
                                   <input type="range" min="5" max="20" value="12" class="slider" id="myRange">
                               </div>
@@ -94,22 +104,22 @@
                                   <p><span id="demo"></span></p>
                               </div>
 
-                            </div>
-                          </div>
-                        </div>
-                        {% endfor %}
-                        <br>
-                        <div class="form-group row">
-                          <div class="col-sm-6">
-                            <div class="btn-group btn-group-justified" role="group">
-                              <div class="btn-group" role="group">
-                                <button class="btn btn-primary" type="submit">Run Backtest</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
+                            </div> -->
+              </div>
+            </div>
+            {% endfor %}
+            <br>
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <div class="btn-group btn-group-justified" role="group">
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-primary" type="submit">Run Backtest</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
         {% endif %}
 
         <br>
@@ -130,13 +140,5 @@
   </div>
 </div>
 
-<script>
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
-output.innerHTML = slider.value;
 
-slider.oninput = function() {
-  output.innerHTML = this.value;
-}
-</script>
 {% endblock %}

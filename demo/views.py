@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 
@@ -31,10 +31,21 @@ def dynamic(request):
             vars=botVariables()
             new_fields=vars.type_backtest_variables[request.session['backtest_type']]
             context['display_details'] = True
-            print ('in get')
+            print ('in get basic')
+
+
+        elif 'change_val' in request.GET:
+            print ('in get button')
+            vars=botVariables()
+            new_fields=vars.type_backtest_variables[request.session['backtest_type']]
+
+            context['display_details'] = True
+
 
         else:
+            print ('in get beggining')
             context['display_details'] = False
+            # context['display_details'] = True
             new_fields = {
                     'caca'  : forms.IntegerField(initial=123),
                     'culo': forms.IntegerField(initial=123),
@@ -43,46 +54,14 @@ def dynamic(request):
         for key in request.POST.keys():
             if key != 'csrfmiddlewaretoken':
                 content[key] = request.POST[key]
-        print (content)
-        ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'],pairChosen = request.session['pairChosen'],periodChosen = request.session['periodChosen'], backtest_details =content )
+        vars=botVariables()
+        new_fields=vars.type_backtest_variables[request.session['backtest_type']]
+        ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'],pairChosen = request.session['pairChosen'],periodChosen = request.session['periodChosen'], backtest_details =new_fields)
+        context['display_details'] = True
+
+        return render(request, 'demo/dynamic.html', context)
 
 
-    # if request.method == 'POST':
-    #     if 'backtest_type' in request.POST:
-    #         request.session['backtest_type'] = str(request.POST['backtest_type'])
-    #         default=request.session['backtest_type']+'_default'
-    #         vars=botVariables()
-    #         deff=vars.type_backtest_variables[default]
-    #         ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'], backtest_details =deff )
-    #         print ('recipe name')
-    #     else:
-    #         for key in request.POST.keys():
-    #             if key != 'csrfmiddlewaretoken':
-    #                 content[key] = request.POST[key]
-    #
-    # if request.session.get('initialised', False):
-    #     request.session['initialised']=True
-    #     request.session['backtest_type']='undefined'
-    #
-    # if request.session['backtest_type'] == 'moving_averages':
-    #     print ('recipe burger')
-    #     new_fields = {
-    #         'cheese': forms.IntegerField(),
-    #         'ham'   : forms.IntegerField(),
-    #         'onion' : forms.IntegerField(),
-    #         'bread' : forms.IntegerField(),
-    #         'ketchup': forms.IntegerField()}
-    # elif request.session['backtest_type'] == 'bollinger_bands':
-    #     print ('recipe pancake')
-    #     new_fields = {
-    #         'milk'  : forms.IntegerField(),
-    #         'butter': forms.IntegerField(),
-    #         'honey' : forms.IntegerField(),
-    #         'eggs'  : forms.IntegerField()}
-    # else:
-    #     request.session['backtest_type']='undefined'
-    #     new_fields = {
-    #         }
 
     print ('in general')
     DynamicDetailsForm = type('DynamicDetailsForm',
@@ -92,6 +71,6 @@ def dynamic(request):
 
     DetailForm = DynamicDetailsForm(content)
     context['details_form'] = DetailForm
-
-    context['backtest_form']    = BacktestForm(request.GET or None)
+    context['backtest_form'] = BacktestForm(request.POST or None)
+    print (context)
     return render(request, "demo/dynamic.html", context)
