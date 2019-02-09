@@ -23,49 +23,68 @@ def index(request):
 def dynamic(request):
     context = {}
     content = {}
-    if request.session.get('initialised', False):
-        request.session['initialised']=true
-        request.session['recipe_name']='undefined'
-
-    if request.session['recipe_name'] == 'moving_averages':
-        print ('recipe burger')
-        new_fields = {
-            'cheese': forms.IntegerField(),
-            'ham'   : forms.IntegerField(),
-            'onion' : forms.IntegerField(),
-            'bread' : forms.IntegerField(),
-            'ketchup': forms.IntegerField()}
-    elif request.session['recipe_name'] == 'bollinger_bands':
-        print ('recipe pancake')
-        new_fields = {
-            'milk'  : forms.IntegerField(),
-            'butter': forms.IntegerField(),
-            'honey' : forms.IntegerField(),
-            'eggs'  : forms.IntegerField()}
-    else:
-        request.session['recipe_name']='undefined'
-        new_fields = {
-            }
-
-    if request.method == 'POST':
-        if 'recipe_name' in request.POST:
-            request.session['recipe_name'] = str(request.POST['recipe_name'])
-            default=request.session['recipe_name']+'_default'
+    if request.method == 'GET':
+        if 'backtest_type' in request.GET:
+            request.session['backtest_type'] = str(request.GET['backtest_type'])
+            request.session['pairChosen'] = str(request.GET['pairChosen'])
+            request.session['periodChosen'] = str(request.GET['periodChosen'])
             vars=botVariables()
-            deff=vars.type_backtest_variables[default]
-            ckb = BacktestType.objects.create(backtest_type = request.session['recipe_name'], backtest_details =deff )
-            print ('recipe name')
+            new_fields=vars.type_backtest_variables[request.session['backtest_type']]
+            print (new_fields)
         else:
-            for key in request.POST.keys():
-                if key != 'csrfmiddlewaretoken':
-                    content[key] = request.POST[key]
-            ckb = BacktestType.objects.create(backtest_type = request.session['recipe_name'], backtest_details = json.dumps(content))
+            new_fields = {
+                    'caca'  : forms.IntegerField(),
+                    'culo': forms.IntegerField(),
+                    }
+    else:
+        new_fields = {
+                'milk'  : forms.IntegerField(),
+                'butter': forms.IntegerField(),
+                'honey' : forms.IntegerField(),
+                'eggs'  : forms.IntegerField()}
+    # if request.method == 'POST':
+    #     if 'backtest_type' in request.POST:
+    #         request.session['backtest_type'] = str(request.POST['backtest_type'])
+    #         default=request.session['backtest_type']+'_default'
+    #         vars=botVariables()
+    #         deff=vars.type_backtest_variables[default]
+    #         ckb = BacktestType.objects.create(backtest_type = request.session['backtest_type'], backtest_details =deff )
+    #         print ('recipe name')
+    #     else:
+    #         for key in request.POST.keys():
+    #             if key != 'csrfmiddlewaretoken':
+    #                 content[key] = request.POST[key]
+    #
+    # if request.session.get('initialised', False):
+    #     request.session['initialised']=True
+    #     request.session['backtest_type']='undefined'
+    #
+    # if request.session['backtest_type'] == 'moving_averages':
+    #     print ('recipe burger')
+    #     new_fields = {
+    #         'cheese': forms.IntegerField(),
+    #         'ham'   : forms.IntegerField(),
+    #         'onion' : forms.IntegerField(),
+    #         'bread' : forms.IntegerField(),
+    #         'ketchup': forms.IntegerField()}
+    # elif request.session['backtest_type'] == 'bollinger_bands':
+    #     print ('recipe pancake')
+    #     new_fields = {
+    #         'milk'  : forms.IntegerField(),
+    #         'butter': forms.IntegerField(),
+    #         'honey' : forms.IntegerField(),
+    #         'eggs'  : forms.IntegerField()}
+    # else:
+    #     request.session['backtest_type']='undefined'
+    #     new_fields = {
+    #         }
 
     DynamicDetailsForm = type('DynamicDetailsForm',
             (BacktestDetailsForm,),
             new_fields)
 
+
     DetailForm = DynamicDetailsForm(content)
-    context['ingridients_form'] = DetailForm
-    context['cookbook_form']    = BacktestType(request.POST or None)
+    context['details_form'] = DetailForm
+    context['backtest_form']    = BacktestForm(request.POST or None)
     return render(request, "demo/dynamic.html", context)

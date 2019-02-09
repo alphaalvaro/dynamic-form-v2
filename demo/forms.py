@@ -1,5 +1,5 @@
 from django import forms
-from .models import CookBook
+from .models import CookBook, BacktestType
 
 #class HamburgerForm(forms.ModelForm):
 #    class Meta:

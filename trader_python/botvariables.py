@@ -13,7 +13,7 @@ class botVariables(object):
 
 
         #for backtesting you need a start and endtime
-        print('BotVars: Ecxhange with Binance')
+        # print('BotVars: Ecxhange with Binance')
         self.database="CandleStick" #See databases available in sqlite
         self.pair='BNBUSDT'    #For binance
         self.period="KLINE_INTERVAL_4HOUR"     #For binance: KLINE_INTERVAL_12HOUR, 15MINUTE, 1DAY, 1HOUR, 1MINUTE, ETC, see : https://python-binance.readthedocs.io/en/latest/binance.html
@@ -80,8 +80,8 @@ class botVariables(object):
                 'mov_av_2'   : forms.IntegerField(),
                 },
             'moving_averages_default': {
-                'mov_av_1': forms.IntegerField(),
-                'mov_av_2'   : forms.IntegerField(),
+                'mov_av_1': 12,
+                'mov_av_2': 15,
                 },
             'bollinger_bands':{
                 'boll_band_1': forms.IntegerField(),

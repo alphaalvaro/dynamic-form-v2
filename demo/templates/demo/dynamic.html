@@ -17,17 +17,22 @@
     }
   });
 
-  $(document).on('change','#id_recipe_name', function () {
+  $(document).on('change','#id_backtest_type', function () {
     console.log( $(this).val() );
     var form = $(this).closest("form");
     $.ajax({
         url: form.attr("data-url"),
-        type: 'post',
+        type: 'get',
         data: form.serialize(),
-        dataType: 'json',
         success: function (data) {
-          alert(data);
-        },
+          // console.log('data sent ' +
+          // data);
+          // alert('data sent ' +
+          // data);
+          // $("#extra-parameters").load(location.href+"#extra-parameters>*","");
+          // $("#extra-parameters").load(window.location.href + " #extra-parameters");
+          document.getElementById('extra-parameters').style.display = "block";
+          },
         failure: function(data) {
           alert('Got an error dude');
         }
@@ -42,9 +47,9 @@
   <div class="col-sm-12">
     <div class="page-header">
       <h2>Choose Recipe</h2>
-      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST" data-url="{% url 'demo:dynamic' %}">
+      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="GET" data-url="{% url 'demo:dynamic' %}">
         {% csrf_token %}
-        {% for field in cookbook_form %}
+        {% for field in backtest_form %}
         <div class="form-group row">
           <div class="col-sm-6">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -65,10 +70,10 @@
       </form>
 
 
-      <div class="col-sm-3">
+      <div id="btnClick" class="col-sm-3">
         <div class="btn-group btn-group-justified" role="group">
           <div class="btn-group" role="group">
-            <button id="btnClick" class="btn btn-primary" type="submit">modify default</button>
+            <button  class="btn btn-primary" type="submit">Modify default</button>
           </div>
         </div>
       </div>
@@ -78,7 +83,7 @@
       <h3>Specify Ingridients</h3>
       <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST">
         {% csrf_token %}
-        {% for field in ingridients_form %}
+        {% for field in details_form %}
         <div class="form-group row">
           <div class="col-sm-6">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -97,9 +102,7 @@
           </div>
         </div>
       </form>
-
     </div>
-
   </div>
 </div>
 
