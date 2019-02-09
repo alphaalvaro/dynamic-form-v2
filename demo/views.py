@@ -30,20 +30,23 @@ def dynamic(request):
             request.session['periodChosen'] = str(request.GET['periodChosen'])
             vars=botVariables()
             new_fields=vars.type_backtest_variables[request.session['backtest_type']]
-
+            context['display_details'] = True
             print ('in get')
 
         else:
+            context['display_details'] = False
             new_fields = {
                     'caca'  : forms.IntegerField(initial=123),
                     'culo': forms.IntegerField(initial=123),
                     }
-    else:
-        new_fields = {
-                'milk'  : forms.IntegerField(),
-                'butter': forms.IntegerField(),
-                'honey' : forms.IntegerField(),
-                'eggs'  : forms.IntegerField()}
+    if request.method == "POST":
+        for key in request.POST.keys():
+            if key != 'csrfmiddlewaretoken':
+                content[key] = request.POST[key]
+        print (content)
+        ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'],pairChosen = request.session['pairChosen'],periodChosen = request.session['periodChosen'], backtest_details =content )
+
+
     # if request.method == 'POST':
     #     if 'backtest_type' in request.POST:
     #         request.session['backtest_type'] = str(request.POST['backtest_type'])

@@ -7,15 +7,17 @@
 {% block body %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
-  $(document).on('click', '#btnClick', function(){
-    if (document.getElementById('extra-parameters').style.display === "none") {
-    document.getElementById('extra-parameters').style.display = "block";
-    document.getElementById('button_backtest').style.display = "none";
-    } else {
-      document.getElementById('extra-parameters').style.display = "none";
-      document.getElementById('button_backtest').style.display = "block";
-    }
-  });
+  // $(document).on('click', '#btnClick', function(){
+  //   if (document.getElementById('extra-parameters').style.display === "none") {
+  //   document.getElementById('extra-parameters').style.display = "block";
+  //   document.getElementById('button_backtest').style.display = "none";
+  //   } else {
+  //     document.getElementById('extra-parameters').style.display = "none";
+  //     document.getElementById('button_backtest').style.display = "block";
+  //   }
+  // });
+
+
 
   $(document).on('change','#id_backtest_type', function () {
     console.log( $(this).val() );
@@ -30,7 +32,7 @@
           // alert('data sent ' +
           // data);
           // $("#extra-parameters").load(location.href+"#extra-parameters>*","");
-          // $("#extra-parameters").load(window.location.href + " #extra-parameters");
+          $("#extra-parameters").load(window.location.href + " #extra-parameters");
           // document.getElementById('extra-parameters').style.display = "block";
           },
         failure: function(data) {
@@ -42,7 +44,6 @@
 
 
 </script>
-
 <div class="row">
   <div class="col-sm-12">
     <div class="page-header">
@@ -56,22 +57,54 @@
             {% if field.id_for_label == 'id_backtest_type' %}
               <div class="form-group row">
                 <div class="col-sm-8">{{ field|add_class:'form-control' }}</div>
+                {% if not display_details %}
                 <div id="btnClick" class="col-sm-4">
                   <div class="btn-group btn-group-justified" role="group">
                     <div class="btn-group" role="group">
-                      <button class="btn btn-primary" type="submit">Change value</button>
+                      <button class="btn btn-secondary" type="submit">Change default values</button>
                     </div>
                   </div>
                 </div>
+                {% endif %}
               </div>
             {% else %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <!-- <label for="{{ field.id_for_label }}">{{ field.label }}</label> -->
             {{ field|add_class:'form-control' }}
             {% endif %}
+
+
           </div>
         </div>
         {% endfor %}
+        {%if display_details %}
+                    <div id="extra-parameters" class="advanced-options">
+                      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST">
+                        {% csrf_token %}
+                        {% for field in details_form %}
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                            <input type="range" class="custom-range" min="0" max="5" id="customRange2">
+                          </div>
+                        </div>
+                        {% endfor %}
+                        <br>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <div class="btn-group btn-group-justified" role="group">
+                              <div class="btn-group" role="group">
+                                <button class="btn btn-primary" type="submit">Run Backtest</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+        {% endif %}
+
         <br>
+        {% if not display_details %}
         <div id="button_backtest" class="form-group row">
           <div class="col-sm-3">
             <div class="btn-group btn-group-justified" role="group">
@@ -81,34 +114,8 @@
             </div>
           </div>
         </div>
-      </form>
-    </div>
+        {% endif %}
 
-
-
-
-    <div style="display:none;" id="extra-parameters" class="advanced-options">
-      <h3>Specify Ingridients</h3>
-      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST">
-        {% csrf_token %}
-        {% for field in details_form %}
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:'form-control' }}
-          </div>
-        </div>
-        {% endfor %}
-        <br>
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <div class="btn-group btn-group-justified" role="group">
-              <div class="btn-group" role="group">
-                <button class="btn btn-primary" type="submit">Specify Ingridients</button>
-              </div>
-            </div>
-          </div>
-        </div>
       </form>
     </div>
   </div>
