@@ -12,7 +12,7 @@
     console.log( $(this).val() );
     var form = $(this).closest("form");
     $.ajax({
-        url: form.attr("data-url"),
+        // url: "demo/dynamic.html",
         type: 'get',
         data: form.serialize(),
         success: function (data) {
@@ -33,11 +33,14 @@
     // console.log( $(this).val() );
     var form = $(this).closest("form");
     $.ajax({
-        url: form.attr("data-url"),
+        // url: 'demo/dynamic.html',
         type: 'get',
         data: {'change_val': 1},
         success: function (data) {
-          console.log(form.attr("data-url"));},
+          // setTimeout(function(){// wait for 5 secs(2)
+          //        location.reload(); // then reload the page.(3)
+          //   }, 500);
+        },
         failure: function(data) {
           alert('Got an error dude');
         }

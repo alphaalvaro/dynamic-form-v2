@@ -1,20 +1,12 @@
 from django import forms
-from .models import CookBook, BacktestModel
+from .models import  BacktestModel,Book
 
-#class HamburgerForm(forms.ModelForm):
-#    class Meta:
-#        model = Ingridients
-#        fields = ['cheese', 'ham', 'onion', 'bread', 'ketchup']
 
-#class PancakeForm(forms.ModelForm):
-#    class Meta:
-#        model = Ingridients
-#        fields = ['milk', 'butter', 'honey', 'eggs']
 
-class CookBookForm(forms.ModelForm):
+class BookForm(forms.ModelForm):
     class Meta:
-        model = CookBook
-        exclude = ['ingridients']
+        model = Book
+        fields = ('title', 'publication_date', 'author', 'price', 'pages', 'book_type', )
 
 
 

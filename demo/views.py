@@ -15,9 +15,37 @@ import pdb
 
 from trader_python.botvariables import botVariables
 
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from .forms import BookForm
+
+def book_create(request):
+    data = dict()
+
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = BookForm()
+
+    context = {'form': form}
+    data['html_form'] = render_to_string('demo/partial_book_create.html',
+        context,
+        request=request
+    )
+    return JsonResponse(data)
+
 
 def index(request):
     return render(request, 'demo/index.html')
+
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'demo/booklist.html', {'books': books})
 
 
 def dynamic(request):
@@ -34,12 +62,14 @@ def dynamic(request):
             print ('in get basic')
 
 
+
         elif 'change_val' in request.GET:
             print ('in get button')
             vars=botVariables()
             new_fields=vars.type_backtest_variables[request.session['backtest_type']]
 
             context['display_details'] = True
+
 
 
         else:
@@ -72,5 +102,5 @@ def dynamic(request):
     DetailForm = DynamicDetailsForm(content)
     context['details_form'] = DetailForm
     context['backtest_form'] = BacktestForm(request.POST or None)
-    print (context)
+    # print (context)
     return render(request, "demo/dynamic.html", context)
