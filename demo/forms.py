@@ -6,7 +6,7 @@ from .models import  BacktestModel,Book
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ('title', 'publication_date', 'author', 'price', 'pages', 'book_type', )
+        fields = ('title', 'publication_date')
 
 
 

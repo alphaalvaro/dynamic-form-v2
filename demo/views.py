@@ -20,24 +20,28 @@ from django.template.loader import render_to_string
 from .forms import BookForm
 
 def book_create(request):
-    data = dict()
-
     if request.method == 'POST':
         form = BookForm(request.POST)
+    else:
+        form = BookForm()
+    return save_book_form(request, form, 'demo/partial_book_create.html')
+
+def save_book_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
+            books = Book.objects.all()
+            data['html_book_list'] = render_to_string('demo/partial_backtest_list.html', {
+                'books': books
+            })
         else:
             data['form_is_valid'] = False
-    else:
-        form = BookForm()
-
     context = {'form': form}
-    data['html_form'] = render_to_string('demo/partial_book_create.html',
-        context,
-        request=request
-    )
+    data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
+    # return render(request, "demo/dynamic.html", context)
 
 
 def index(request):
@@ -100,6 +104,7 @@ def dynamic(request):
 
 
     DetailForm = DynamicDetailsForm(content)
+    context['books'] = Book.objects.all()
     context['details_form'] = DetailForm
     context['backtest_form'] = BacktestForm(request.POST or None)
     # print (context)

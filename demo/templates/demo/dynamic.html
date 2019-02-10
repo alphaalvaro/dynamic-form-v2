@@ -5,7 +5,7 @@
 {% load static %}
 
 {% block body %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
 <link rel="stylesheet" href="{% static 'css/dynamic.css' %}">
 <script>
   $(document).on('change','#id_backtest_type', function () {
@@ -17,38 +17,73 @@
         data: form.serialize(),
         success: function (data) {
           console.log(form.attr("data-url"));
-          // console.log('data  sent ' + data);
-          // alert('data sent ' +
-          // data);
-          // $("#extra-parameters").load(location.href+"#extra-parameters>*","");
-          // $("#extra-parameters").load(window.location.href + " #extra-parameters");
-          // document.getElementById('extra-parameters').style.display = "block";
           },
         failure: function(data) {
           alert('Got an error dude');
         }
       });
   });
-  $(document).on('click','#btnClick', function () {
-    // console.log( $(this).val() );
-    var form = $(this).closest("form");
+
+  $(document).on('click','#button_detail', function () {
+    console.log( $(this).val() );
+    var btn = $(this);
+    console.log('Hi ajax');
     $.ajax({
-        // url: 'demo/dynamic.html',
+      url: btn.attr("data-url"),
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#modal-book .modal-content").html("");
+        $("#modal-book").modal("show");
+      },
+      success: function (data) {
+        $("#modal-book .modal-content").html(data.html_form);
+      }
+    });
+  });
+
+    var loadForm = function () {
+      var btn = $(this);
+      console.log('Hi ajax');
+      $.ajax({
+        url: btn.attr("data-url"),
         type: 'get',
-        data: {'change_val': 1},
-        success: function (data) {
-          // setTimeout(function(){// wait for 5 secs(2)
-          //        location.reload(); // then reload the page.(3)
-          //   }, 500);
+        dataType: 'json',
+        beforeSend: function () {
+          $("#modal-book .modal-content").html("");
+          $("#modal-book").modal("show");
         },
-        failure: function(data) {
-          alert('Got an error dude');
+        success: function (data) {
+          $("#modal-book .modal-content").html(data.html_form);
         }
       });
-    });
-    $(document).ajaxStop(function(){
-      $("#extra-parameters").load(window.location.href + " #extra-parameters");
-  });
+    };
+
+    var saveForm = function () {
+      var form = $(this);
+      console.log('bye ajax');
+      $.ajax({
+        // url: "{% url 'demo:dynamic' %}"
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+        success: function (data) {
+          if (data.form_is_valid) {
+            $("#full_form tbody").html(data.html_book_list);
+            $("#modal-book").modal("hide");
+          }
+          else {
+            $("#modal-book .modal-content").html(data.html_form);
+          }
+        }
+      });
+      return false;
+    };
+
+    $(".js-create-book").click(loadForm);
+    $("#modal-book").on("submit", ".js-book-create-form", saveForm)
+
 </script>
 
 
@@ -62,7 +97,7 @@
       <h1>I'm diplaying</h1>
       {% endif %}
       <h2>Choose Recipe</h2>
-      <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST" data-url="{% url 'demo:dynamic' %}">
+      <form id="full_form" action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST" data-url="{% url 'demo:dynamic' %}">
         {% csrf_token %}
         {% for field in backtest_form %}
         <div class="form-group row">
@@ -72,10 +107,13 @@
             <div class="form-group row">
               <div class="col-sm-8">{{ field|add_class:'form-control' }}</div>
               {% if not display_details %}
-              <div id="btnClick" class="col-sm-4">
+              <div class="col-sm-4">
                 <div class="btn-group btn-group-justified" role="group">
                   <div class="btn-group" role="group">
-                    <button class="btn btn-secondary" type="button">Change default values</button>
+                    <!-- <button class="btn btn-secondary" type="button">Change default values</button> -->
+                    <button  id ="button_detail" type="button" class="btn btn-primary js-create-book" data-url="{% url 'demo:book_create' %}">
+                      New book
+                    </button>
                   </div>
                 </div>
               </div>
@@ -99,15 +137,6 @@
               <div class="col-sm-6">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field|add_class:'form-control' }}
-                <!-- <div class="form-group row">
-                              <div class="col-sm-11">
-                                  <input type="range" min="5" max="20" value="12" class="slider" id="myRange">
-                              </div>
-                              <div class="col-sm-1">
-                                  <p><span id="demo"></span></p>
-                              </div>
-
-                            </div> -->
               </div>
             </div>
             {% endfor %}
@@ -139,6 +168,27 @@
         {% endif %}
 
       </form>
+    </div>
+  </div>
+</div>
+<table class="table" id="book-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>>
+      <th>Publication date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% include 'demo/partial_backtest_list.html' %}
+  </tbody>
+</table>
+
+<div class="modal fade" id="modal-book">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
     </div>
   </div>
 </div>
