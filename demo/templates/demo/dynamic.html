@@ -6,73 +6,12 @@
 
 {% block body %}
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
-<link rel="stylesheet" href="{% static 'css/dynamic.css' %}">
-<script>
-  $(document).on('change','#id_backtest_type', function () {
-    console.log( $(this).val() );
-    var form = $(this).closest("form");
-    $.ajax({
-        // url: "demo/dynamic.html",
-        type: 'get',
-        data: form.serialize(),
-        success: function (data) {
-          console.log(form.attr("data-url"));
-          },
-        failure: function(data) {
-          alert('Got an error dude');
-        }
-      });
-  });
-
-  $(document).ready(function() {
-
-    var loadForm = function () {
-      var btn = $(this);
-      console.log('Hi ajax');
-      $.ajax({
-        url: btn.attr("data-url"),
-        type: 'get',
-        dataType: 'json',
-        beforeSend: function () {
-          $("#modal-book .modal-content").html("");
-          $("#modal-book").modal("show");
-        },
-        success: function (data) {
-          $("#modal-book .modal-content").html(data.html_form);
-        }
-      });
-    };
-
-    var saveForm = function () {
-      var form = $(this);
-      console.log('bye ajax');
-      $.ajax({
-        // url: "{% url 'demo:dynamic' %}"
-        url: form.attr("action"),
-        data: form.serialize(),
-        type: form.attr("method"),
-        dataType: 'json',
-        success: function (data) {
-          if (data.form_is_valid) {
-            $("#full_form tbody").html(data.html_book_list);
-            $("#modal-book").modal("hide");
-          }
-          else {
-            $("#modal-book .modal-content").html(data.html_form);
-          }
-        }
-      });
-      return false;
-    };
-
-    $(".js-create-book").click(loadForm);
-    $("#modal-book").on("submit", ".js-book-create-form", saveForm)
-    });
-</script>
-
-
-
-
+<link rel="stylesheet" href="{% static 'demo/css/dynamic.css' %}">
+{% block javascript %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="{% static 'demo/js/backtest.js' %}"></script>
+{% endblock %}
 
 <div class="row">
   <div class="col-sm-12">

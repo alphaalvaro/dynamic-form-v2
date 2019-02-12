@@ -41,7 +41,6 @@ def save_book_form(request, form, template_name):
     context = {'form': form}
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
-    # return render(request, "demo/dynamic.html", context)
 
 
 def index(request):
