@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 
@@ -42,13 +42,43 @@ def save_book_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'demo/booklist.html', {'books': books})
+
+def book_update(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+    else:
+        form = BookForm(instance=book)
+    return save_book_form(request, form, 'demo/partial_book_update.html')
+
+
+def book_delete(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    data = dict()
+    if request.method == 'POST':
+        book.delete()
+        data['form_is_valid'] = True
+        books = Book.objects.all()
+        data['html_book_list'] = render_to_string('demo/partial_backtest_list.html', {
+            'books': books
+        })
+    else:
+        context = {'book': book}
+        data['html_form'] = render_to_string('demo/partial_book_delete.html', context, request=request)
+    return JsonResponse(data)
 
 def index(request):
     return render(request, 'demo/index.html')
 
-def book_list(request):
-    books = Book.objects.all()
-    return render(request, 'demo/booklist.html', {'books': books})
+
+
+
+
+
+
 
 
 def dynamic(request):
