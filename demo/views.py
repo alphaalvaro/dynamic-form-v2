@@ -17,11 +17,11 @@ from trader_python.botvariables import botVariables
 
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from .forms import BookForm
+from .forms import BookForm, BacktestDetailsForm
 
 def book_create(request):
     if request.method == 'POST':
-        form = BookForm(request.POST)
+        DetailForm = BacktestDetailsForm(request.POST)
     else:
         if 'backtest_type' in request.GET:
             request.session['backtest_type'] = str(request.GET['backtest_type'])
@@ -32,14 +32,22 @@ def book_create(request):
                     new_fields)
             DetailForm = DynamicDetailsForm()
 
-        form = BookForm()
+    print ("to save_book_form")
     return save_book_form(request, DetailForm, 'demo/partial_book_create.html')
 
 def save_book_form(request, form, template_name):
     data = dict()
+    content={}
     if request.method == 'POST':
+        print ("Trying to init session")
         if form.is_valid():
-            form.save()
+            print ("session init")
+            for key in request.POST.keys():
+                if key != 'csrfmiddlewaretoken':
+                    content[key] = request.POST[key]
+            request.session['initialised']=True
+            request.session['backtest_details']= content
+
             data['form_is_valid'] = True
             books = Book.objects.all()
             data['html_book_list'] = render_to_string('demo/partial_backtest_list.html', {
@@ -85,57 +93,21 @@ def index(request):
 
 def dynamic(request):
     context = {}
-    content = {}
-    if request.method == 'GET':
-        if 'backtest_type' in request.GET:
-            request.session['backtest_type'] = str(request.GET['backtest_type'])
-            request.session['pairChosen'] = str(request.GET['pairChosen'])
-            request.session['periodChosen'] = str(request.GET['periodChosen'])
-            vars=botVariables()
-            new_fields=vars.type_backtest_variables[request.session['backtest_type']]
-            context['display_details'] = True
-            print ('in get basic')
+    if request.session.get('initialised', False):
+        print ('initializing session')
+        request.session['initialised']=True
+        request.session['backtest_details']='undefined'
 
-
-
-        elif 'change_val' in request.GET:
-            print ('in get button')
-            vars=botVariables()
-            new_fields=vars.type_backtest_variables[request.session['backtest_type']]
-
-            context['display_details'] = True
-
-
-
-        else:
-            print ('in get beggining')
-            context['display_details'] = False
-            # context['display_details'] = True
-            new_fields = {
-                    'caca'  : forms.IntegerField(initial=123),
-                    'culo': forms.IntegerField(initial=123),
-                    }
     if request.method == "POST":
-        for key in request.POST.keys():
-            if key != 'csrfmiddlewaretoken':
-                content[key] = request.POST[key]
-        vars=botVariables()
-        new_fields=vars.type_backtest_variables[request.session['backtest_type']]
-        ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'],pairChosen = request.session['pairChosen'],periodChosen = request.session['periodChosen'], backtest_details =new_fields)
-        context['display_details'] = True
+        backtest_details=request.session['backtest_details']
+        backtestForm = BacktestForm(request.POST)
+        backtest= backtestForm.save(commit=False)
+        backtest.backtest_details=backtest_details
+        backtest.save()
+        print ('in general')
 
 
-
-
-    print ('in general')
-    DynamicDetailsForm = type('DynamicDetailsForm',
-            (BacktestDetailsForm,),
-            new_fields)
-
-
-    DetailForm = DynamicDetailsForm(content)
     context['books'] = Book.objects.all()
-    context['details_form'] = DetailForm
     context['backtest_form'] = BacktestForm(request.POST or None)
     # print (context)
     return render(request, "demo/dynamic.html", context)
