@@ -33,12 +33,9 @@ $(function () {
         if (data.form_is_valid) {
           $("#book-table tbody").html(data.html_book_list);
           $("#modal-book").modal("hide");
-          console.log(data.backtest_details);
           if (typeof(Storage) !== "undefined") {
-            // Store
             // https://stackoverflow.com/q/6193574/5176549
             sessionStorage.setItem("backtest_details", JSON.stringify(data.backtest_details));
-            console.log(sessionStorage.getItem('backtest_details'))
           }
         }
         else {

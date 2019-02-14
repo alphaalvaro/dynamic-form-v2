@@ -17,7 +17,10 @@ class BacktestForm(forms.ModelForm):
     class Meta:
         model = BacktestModel
         fields = ('pairChosen', 'periodChosen', 'backtest_type', 'backtest_details')
-        widgets = {'backtest_details': forms.HiddenInput()}
+        # widgets = {'backtest_details': forms.HiddenInput()}
+
+    backtest_details = forms.CharField(widget=forms.HiddenInput(), initial="null")
+
 
 class BacktestDetailsForm(forms.Form):
     pass

@@ -20,7 +20,10 @@
       <h2>Choose Recipe</h2>
       <form id="full_form" action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST" data-url="{% url 'demo:dynamic' %}">
         {% csrf_token %}
-        {% for field in backtest_form %}
+        {% for field in backtest_form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+        {% for field in backtest_form.visible_fields %}
         <div class="form-group row">
           <div class="col-sm-6 ">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>

@@ -93,22 +93,27 @@ def index(request):
 
 def dynamic(request):
     context = {}
-    if request.session.get('initialised', False):
-        print ('initializing session')
-        request.session['initialised']=True
-        request.session['backtest_details']='undefined'
-
     if request.method == "POST":
-        backtest_details=request.session.get('backtest_details')
         backtestForm = BacktestForm(request.POST)
-        backtestForm.save()
+        if backtestForm.is_valid():
+            if request.POST.get('backtest_details')=="null":
+                vars=botVariables()
+                new_fields=vars.type_backtest_variables[request.POST.get('backtest_type')+"_def"]
+                backtest= backtestForm.save(commit=False)
+                backtest.backtest_details=new_fields
+                backtest.save()
+                print ("default values saved")
+            else:
+                backtestForm.save()
+        else:
+            print ("not valid form")
         # backtest= backtestForm.save(commit=False)
         # backtest.backtest_details=backtest_details
         # backtest.save()
-        print ('in general')
+
 
 
     context['books'] = Book.objects.all()
-    context['backtest_form'] = BacktestForm(request.POST or None)
+    context['backtest_form'] = BacktestForm(request.POST or None,)
     # print (context)
     return render(request, "demo/dynamic.html", context)
