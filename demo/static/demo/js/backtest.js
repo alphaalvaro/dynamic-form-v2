@@ -4,10 +4,12 @@ $(function () {
 
   var loadForm = function () {
     var btn = $(this);
+    var formb = $('#full_form');
     console.log('Hi Ajax');
     $.ajax({
       url: btn.attr("data-url"),
       type: 'get',
+      data: formb.serialize(),
       dataType: 'json',
       beforeSend: function () {
         $("#modal-book .modal-content").html("");

@@ -23,8 +23,17 @@ def book_create(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
     else:
+        if 'backtest_type' in request.GET:
+            request.session['backtest_type'] = str(request.GET['backtest_type'])
+            vars=botVariables()
+            new_fields=vars.type_backtest_variables[request.session['backtest_type']]
+            DynamicDetailsForm = type('DynamicDetailsForm',
+                    (BacktestDetailsForm,),
+                    new_fields)
+            DetailForm = DynamicDetailsForm()
+
         form = BookForm()
-    return save_book_form(request, form, 'demo/partial_book_create.html')
+    return save_book_form(request, DetailForm, 'demo/partial_book_create.html')
 
 def save_book_form(request, form, template_name):
     data = dict()
