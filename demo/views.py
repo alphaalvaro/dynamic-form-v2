@@ -74,13 +74,6 @@ def index(request):
     return render(request, 'demo/index.html')
 
 
-
-
-
-
-
-
-
 def dynamic(request):
     context = {}
     content = {}
@@ -122,7 +115,6 @@ def dynamic(request):
         ckb = BacktestModel.objects.create(backtest_type = request.session['backtest_type'],pairChosen = request.session['pairChosen'],periodChosen = request.session['periodChosen'], backtest_details =new_fields)
         context['display_details'] = True
 
-        return render(request, 'demo/dynamic.html', context)
 
 
 
