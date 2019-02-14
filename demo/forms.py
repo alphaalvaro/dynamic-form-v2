@@ -16,7 +16,8 @@ class IngridientsForm(forms.Form):
 class BacktestForm(forms.ModelForm):
     class Meta:
         model = BacktestModel
-        exclude = ['backtest_details']
+        fields = ('pairChosen', 'periodChosen', 'backtest_type', 'backtest_details')
+        widgets = {'backtest_details': forms.HiddenInput()}
 
 class BacktestDetailsForm(forms.Form):
     pass

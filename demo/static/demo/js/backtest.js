@@ -33,6 +33,13 @@ $(function () {
         if (data.form_is_valid) {
           $("#book-table tbody").html(data.html_book_list);
           $("#modal-book").modal("hide");
+          console.log(data.backtest_details);
+          if (typeof(Storage) !== "undefined") {
+            // Store
+            // https://stackoverflow.com/q/6193574/5176549
+            sessionStorage.setItem("backtest_details", JSON.stringify(data.backtest_details));
+            console.log(sessionStorage.getItem('backtest_details'))
+          }
         }
         else {
           $("#modal-book .modal-content").html(data.html_form);
@@ -41,6 +48,18 @@ $(function () {
     });
     return false;
   };
+
+  var saveBacktest = function () {
+    var strategy_details = $('#id_backtest_details');
+    try {
+      var data=sessionStorage.getItem('backtest_details');
+      $('#id_backtest_details').val(data)
+    }
+    catch(err) {
+        console.log('Still not data passed');
+    }
+  };
+
 
 
   /* Binding */
@@ -56,5 +75,9 @@ $(function () {
   // Delete book
   $("#book-table").on("click", ".js-delete-book", loadForm);
   $("#modal-book").on("submit", ".js-book-delete-form", saveForm);
+
+  //Modification of the backtest_details
+  // https://stackoverflow.com/questions/44087655/edit-form-field-value-on-template
+  $(".js-create-backtest").click(saveBacktest);
 
 });

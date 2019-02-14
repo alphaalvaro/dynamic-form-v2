@@ -46,7 +46,7 @@ def save_book_form(request, form, template_name):
                 if key != 'csrfmiddlewaretoken':
                     content[key] = request.POST[key]
             request.session['initialised']=True
-            request.session['backtest_details']= content
+            data['backtest_details']=content
 
             data['form_is_valid'] = True
             books = Book.objects.all()
@@ -99,11 +99,12 @@ def dynamic(request):
         request.session['backtest_details']='undefined'
 
     if request.method == "POST":
-        backtest_details=request.session['backtest_details']
+        backtest_details=request.session.get('backtest_details')
         backtestForm = BacktestForm(request.POST)
-        backtest= backtestForm.save(commit=False)
-        backtest.backtest_details=backtest_details
-        backtest.save()
+        backtestForm.save()
+        # backtest= backtestForm.save(commit=False)
+        # backtest.backtest_details=backtest_details
+        # backtest.save()
         print ('in general')
 
 

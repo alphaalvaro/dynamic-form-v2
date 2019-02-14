@@ -17,9 +17,6 @@
 <div class="row">
   <div class="col-sm-12">
     <div class="page-header">
-      {% if display_details %}
-      <h1>I'm diplaying</h1>
-      {% endif %}
       <h2>Choose Recipe</h2>
       <form id="full_form" action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST" data-url="{% url 'demo:dynamic' %}">
         {% csrf_token %}
@@ -30,7 +27,6 @@
             {% if field.id_for_label == 'id_backtest_type' %}
             <div class="form-group row">
               <div class="col-sm-8">{{ field|add_class:'form-control' }}</div>
-              {% if not display_details %}
               <div class="col-sm-4">
                 <div class="btn-group btn-group-justified" role="group">
                   <div class="btn-group" role="group">
@@ -41,56 +37,27 @@
                   </div>
                 </div>
               </div>
-              {% endif %}
             </div>
+            {% elif field.id_for_label == 'id_backtest_details' %}
+              {{ field.as_hidden }}
             {% else %}
             <!-- <label for="{{ field.id_for_label }}">{{ field.label }}</label> -->
-            {{ field|add_class:'form-control' }}
+              {{ field|add_class:'form-control' }}
             {% endif %}
-
-
           </div>
         </div>
         {% endfor %}
-        {%if display_details %}
-        <div id="extra-parameters" class="advanced-options">
-          <form action="{% url 'demo:dynamic' %}" class="form-hotizontal" method="POST">
-            {% csrf_token %}
-            {% for field in details_form %}
-            <div class="form-group row">
-              <div class="col-sm-6">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:'form-control' }}
-              </div>
-            </div>
-            {% endfor %}
-            <br>
-            <div class="form-group row">
-              <div class="col-sm-6">
-                <div class="btn-group btn-group-justified" role="group">
-                  <div class="btn-group" role="group">
-                    <button class="btn btn-primary" type="submit">Run Backtest</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        {% endif %}
-
         <br>
-        {% if not display_details %}
+
         <div id="button_backtest" class="form-group row">
           <div class="col-sm-3">
             <div class="btn-group btn-group-justified" role="group">
               <div class="btn-group" role="group">
-                <button class="btn btn-primary" type="submit">Run Backtest</button>
+                <button class="btn btn-primary js-create-backtest" type="submit">Run Backtest</button>
               </div>
             </div>
           </div>
         </div>
-        {% endif %}
-
       </form>
     </div>
   </div>
