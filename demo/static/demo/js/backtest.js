@@ -48,13 +48,17 @@ $(function () {
 
   var saveBacktest = function () {
     var strategy_details = $('#id_backtest_details');
-    try {
+    console.log('button cicked');
+    if (sessionStorage.length == 0){
+      sessionStorage.setItem('backtest_details','null');
       var data=sessionStorage.getItem('backtest_details');
-      $('#id_backtest_details').val(data)
+      console.log('Still not data passed');
     }
-    catch(err) {
-        console.log('Still not data passed');
+    else {
+      var data=sessionStorage.getItem('backtest_details');
+      console.log('Backtest details loaded' + data);
     }
+    $('#id_backtest_details').val(data);
   };
 
 
